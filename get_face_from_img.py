@@ -35,15 +35,6 @@ def get_face(img):
     except:
         print("从服务器获取数据出错")
 
-# client_id 为官网获取的AK， client_secret 为官网获取的SK
-host = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=QHyjVtWGmG9rgRiCtIML5zjv&client_secret=sRgITz59y61SRzePP1BHn0koaFQFCLF9'
-response = requests.get(host)
-if response:
-    content = response.json()
-    access_token = content['access_token']
-print(access_token)
-
-img = "keli.jpeg"
 
 def get_save_img_face(src, dst):
     name = src.split('/')[-1]
@@ -60,11 +51,18 @@ def get_save_img_face(src, dst):
 
 
 if __name__ == '__main__':
-    print(os.getcwd())
+    # client_id 为官网获取的AK， client_secret 为官网获取的SK
+    host = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=QHyjVtWGmG9rgRiCtIML5zjv&client_secret=sRgITz59y61SRzePP1BHn0koaFQFCLF9'
+    response = requests.get(host)
+    if response:
+        content = response.json()
+        access_token = content['access_token']
+    # print(access_token)
 
     if not os.path.exists("result"):
         os.mkdir("result")
     for img in os.listdir():
+        # 操作图片文件
         if "jpeg" or "png" or "jpg" in img:
             get_save_img_face(img, "result/")
             time.sleep(2)

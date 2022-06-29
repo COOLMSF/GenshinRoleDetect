@@ -11,6 +11,7 @@ from multiprocessing import cpu_count
 import time 
 import matplotlib.pyplot as plt
 from sklearn.feature_extraction import image
+
 paddle.enable_static()
 
 fruits_path = './data/faces'
@@ -88,7 +89,9 @@ def train_r(train_list,buffer_size=1024):
 '''
 def Create_CNN(image,type_size):
     # conv_pool_1
+    # 卷积池化层
     conv_pool_1 = fluid.nets.simple_img_conv_pool(input = image,num_filters=32,filter_size=3,pool_size=2,pool_stride=2,act="relu")
+    # 丢弃数据，防止过拟合
     drop = fluid.layers.dropout(x=conv_pool_1,dropout_prob=0.5) # 丢弃率 
 
     # conv_pool_2
@@ -100,8 +103,10 @@ def Create_CNN(image,type_size):
     drop = fluid.layers.dropout(x=conv_pool_3,dropout_prob=0.5) # 丢弃率 
 
     # fc1  
+    # 全连接层
     fc = fluid.layers.fc(input=drop,size=512,act="relu")
     drop = fluid.layers.dropout(x=fc,dropout_prob=0.5) # 丢弃率 
+
     # output
     predict = fluid.layers.fc(input=drop,size=type_size,act="softmax")
     return predict
@@ -136,9 +141,7 @@ accuracy =  fluid.layers.accuracy(input=predict,label=label)
 #执行器
 place = fluid.CPUPlace()
 exe = fluid.Executor(place)
-print(0)
 exe.run(fluid.default_startup_program())
-print(1)
 
 #喂入数据
 feeder = fluid.DataFeeder(place=place,feed_list=[image,label])
